@@ -1,10 +1,11 @@
 const express = require('express');
+const morgan = require('morgan');
+const mainRoute = require('./Routes/mainRoute');
+
 const app = express();
 
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
+app.use(morgan('dev'));
+app.use('/api', mainRoute);
 
 module.exports = app;
