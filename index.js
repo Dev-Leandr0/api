@@ -1,4 +1,5 @@
 const app = require('./src/app');
+const users = require('./src/db/database');
 
 require('dotenv').config({ quiet: true });
 
