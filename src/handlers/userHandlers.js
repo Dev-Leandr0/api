@@ -3,19 +3,33 @@ const { createUserController, getAllUsersController, getUsersByNameController, g
 const Joi = require('joi');
 
 const userSchema = Joi.object({
-  name: Joi.string().min(3).required(),
-  username: Joi.string().min(3).required(),
-  email: Joi.string().email().required()
+  name: Joi.string()
+    .min(3)
+    .max(30)
+    .required(),
+  username: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required(),
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .required(),
+  password: Joi.string()
+    .pattern(new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).{8,}$/))
+    .required(),
+  role: Joi.string()
+    .valid('user', 'admin')
 });
 
-const createUserHandler = (req, res) => {
+const createUserHandler = async (req, res) => {
   try {
 
     const { error } = userSchema.validate(req.body);
     if (error) res.status(404).send(error.details[0].message);
 
-    const { name, username, email } = req.body;
-    const response = createUserController(name, username, email);
+    const { name, username, email, password, role } = req.body;
+    const response = await createUserController(name, username, email, password, role);
     res.status(201).send(response);
   } catch (error) {
     res.status(404).send({ Error: error.message });

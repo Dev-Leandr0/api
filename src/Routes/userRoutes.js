@@ -1,10 +1,12 @@
 const { Router } = require('express');
-const { getAllUserHandler, getOneUserHandler, createUserHandler, updateUserHandler, deleteUserHandler } = require("../handlers/userHandlers")
+const { getAllUserHandler, getOneUserHandler, createUserHandler, updateUserHandler, deleteUserHandler } = require("../handlers/userHandlers");
+const verifyToken = require('../middleware/verifyToken');
+const authorizationAdmin = require('../middleware/authorizeMiddleware');
 
 const userRoutes = Router();
 
 // Usuarios
-userRoutes.get('/', getAllUserHandler);
+userRoutes.get('/', verifyToken, authorizationAdmin, getAllUserHandler);
 
 userRoutes.get('/:id', getOneUserHandler);
 

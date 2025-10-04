@@ -1,9 +1,11 @@
 const users = require('../db/database');
+const bcrypt = require('bcrypt');
 
-const createUserController = (name, username, email) => {
+const createUserController = async (name, username, email, password, role) => {
   const id = users.length + 1;
-  const newUser = { id, name, username, email };
-  if (!name || !username || !email) throw new Error(`Los datos están incompletos`);
+  const hashPassword = await bcrypt.hash(password, 10);
+  const newUser = { id, name, username, email, password: hashPassword, role };
+  if (!name || !username || !email || !password) throw new Error(`Los datos están incompletos`);
   users.push(newUser);
   return newUser;
 };
